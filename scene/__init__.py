@@ -12,17 +12,20 @@
 import os
 import random
 import json
-from utils.system_utils import searchForMaxIteration
+
 from scene.dataset_readers import sceneLoadTypeCallbacks
-from scene.gaussian_model import GaussianModel
-from arguments import ModelParams
-from utils.camera_utils import cameraList_from_camInfos, camera_to_JSON
+from gaussian import GaussianModel
+from camera_utils import cameraList_from_camInfos, camera_to_JSON
+
+def searchForMaxIteration(folder):
+    saved_iters = [int(fname.split("_")[-1]) for fname in os.listdir(folder)]
+    return max(saved_iters)
 
 class Scene:
 
     gaussians : GaussianModel
 
-    def __init__(self, args : ModelParams, gaussians : GaussianModel, load_iteration=None, shuffle=True, resolution_scales=[1.0]):
+    def __init__(self, args, gaussians : GaussianModel, load_iteration=None, shuffle=True, resolution_scales=[1.0]):
         """b
         :param path: Path to colmap scene main folder.
         """
@@ -80,7 +83,7 @@ class Scene:
                                                            "iteration_" + str(self.loaded_iter),
                                                            "point_cloud.ply"))
         else:
-            self.gaussians.create_from_pcd(scene_info.point_cloud, self.cameras_extent)
+            self.gaussians.init_gaussians(scene_info.point_cloud.points, scene_info.point_cloud.colors, self.cameras_extent)
 
     def save(self, iteration):
         point_cloud_path = os.path.join(self.model_path, "point_cloud/iteration_{}".format(iteration))

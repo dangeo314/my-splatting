@@ -16,9 +16,9 @@ from tqdm import tqdm
 from os import makedirs
 from gaussian_renderer import render
 import torchvision
-from utils.general_utils import safe_state
+from general_utils import safe_state
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
+from parsers import ModelParams, PipelineParams, get_combined_args
 from gaussian_renderer import GaussianModel
 
 def render_set(model_path, name, iteration, views, gaussians, pipeline, background):
